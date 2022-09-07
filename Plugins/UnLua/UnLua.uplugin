@@ -37,6 +37,12 @@
             "Name": "UnLuaDefaultParamCollector",
             "Type": "Program",
             "LoadingPhase": "PostConfigInit"
+        },
+        {
+            "Name": "UnLuaEditorBlueprint",
+            "Type": "Editor",
+            "LoadingPhase": "Default",
+            "WhitelistPlatforms": [ "Win64", "Mac" ]
         }
     ]
 }

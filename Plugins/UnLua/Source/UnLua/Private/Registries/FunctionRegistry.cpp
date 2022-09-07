@@ -26,7 +26,14 @@ namespace UnLua
             Env->TryBind(Context);
 
         const auto SelfRef = Env->GetObjectRegistry()->GetBoundRef(Context);
-        check(SelfRef!=LUA_NOREF);
+#if WITH_EDITOR     //[modify] by italink
+		if (SelfRef == LUA_NOREF) {
+			UE_LOG(LogUnLua, Warning, TEXT("Invoke Lua Function ( %s ) Faild!"), *Function->GetAuthoredName());
+			return;
+		}
+#else
+		check(SelfRef != LUA_NOREF);
+#endif
 
         const auto L = Env->GetMainState();
         lua_Integer FuncRef;

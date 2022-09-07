@@ -69,6 +69,9 @@ namespace UnLua
                 FGameDelegates::Get().GetEndPlayMapDelegate().AddRaw(this, &FUnLuaModule::OnEndPlayMap);
             }
 
+			//[modify] by italink
+			ULuaEnvLocator_Editor::Instance()->SetActive(true);
+
             if (IsRunningGame() || IsRunningDedicatedServer())
 #endif
                 SetActive(true);
@@ -79,6 +82,12 @@ namespace UnLua
         {
             UnregisterSettings();
             SetActive(false);
+
+#if WITH_EDITOR     //[modify] by italink
+			ULuaEnvLocator_Editor::Instance()->Reset();
+			ULuaEnvLocator_Editor::Instance()->RemoveFromRoot();
+#endif
+
         }
 
         virtual bool IsActive() override
@@ -93,6 +102,9 @@ namespace UnLua
 
             if (bActive)
             {
+#if WITH_EDITOR     //[modify] by italink
+				ULuaEnvLocator_Editor::Instance()->SetActive(false);
+#endif 
                 OnHandleSystemErrorHandle = FCoreDelegates::OnHandleSystemError.AddRaw(this, &FUnLuaModule::OnSystemError);
                 OnHandleSystemEnsureHandle = FCoreDelegates::OnHandleSystemEnsure.AddRaw(this, &FUnLuaModule::OnSystemError);
                 GUObjectArray.AddUObjectCreateListener(this);
@@ -128,6 +140,10 @@ namespace UnLua
                     if (Class->ImplementsInterface(UUnLuaInterface::StaticClass()))
                         ULuaFunction::RestoreOverrides(Class);
                 }
+#if WITH_EDITOR     //[modify] by italink
+				bIsActive = bActive;
+				ULuaEnvLocator_Editor::Instance()->SetActive(true);
+#endif
             }
 
             bIsActive = bActive;
@@ -136,7 +152,11 @@ namespace UnLua
         virtual FLuaEnv* GetEnv(UObject* Object) override
         {
             if (!bIsActive)
-                return nullptr;
+#if WITH_EDITOR     //[modify] by italink
+				return ULuaEnvLocator_Editor::Instance()->Locate(Object);
+#else
+				return nullptr;
+#endif
             return EnvLocator->Locate(Object);
         }
 

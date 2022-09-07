@@ -50,7 +50,6 @@ namespace UnLua
 
         FClassDesc* Register(const UStruct* Class);
 
-    private:
         static FClassDesc* RegisterInternal(UStruct* Type, const FString& Name);
 
         void Unregister(const FClassDesc* ClassDesc);

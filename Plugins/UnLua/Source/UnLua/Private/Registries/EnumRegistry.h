@@ -38,7 +38,6 @@ namespace UnLua
 
         FEnumDesc* Register(const UEnum* Enum);
 
-    private:
         static TMap<UEnum*, FEnumDesc*> Enums;
         static TMap<FName, FEnumDesc*> Name2Enums;
         FLuaEnv* Env;
